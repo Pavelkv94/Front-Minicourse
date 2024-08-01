@@ -5,6 +5,7 @@ import { Lose } from "./LoseComponent/LoseComponent.js";
 import { ResultPanel } from "./ResultPanel/ResultPanel.js";
 import { Settings } from "./Settings/Settings.js";
 import { Start } from "./StartComponents/Start.js";
+import { Win } from "./WinComponent/Win.js";
 
 export function App() {
   const localState = { prevGameStatus: null, cleanupFunctions: [] };
@@ -55,6 +56,10 @@ async function render(element, localState) {
     case GAME_STATUSES.LOSE:
       const loseComponent = Lose();
       element.append(loseComponent.element);
+      break;
+    case GAME_STATUSES.WIN:
+      const winComponent = Win();
+      element.append(winComponent.element);
       break;
     default:
       throw new Error("not implemented");
