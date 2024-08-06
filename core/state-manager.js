@@ -8,8 +8,8 @@ const _state = {
       columnsCount: 8,
     },
     googleJumpInterval: 4000,
-    pointsToLose: 10,
-    pointsToWin: 10,
+    pointsToLose: 5,
+    pointsToWin: 5,
   },
   positions: {
     google: {
@@ -94,10 +94,12 @@ function _catchGoogle(playerNumber) {
   const playerIndex = _getPlayerIndexByNumber(playerNumber);
   _state.points.players[playerIndex]++; //увеличиваем балы при выигрыше
   notifyObservers(EVENTS.SCORES_CHANGED);
+  notifyObservers(EVENTS.GOOGLE_CAUGHT);
 
   if (_state.points.players[playerIndex] === _state.settings.pointsToWin) {
     _state.gameStatus = GAME_STATUSES.WIN;
     notifyObservers(EVENTS.STATUS_CHANGED);
+
     clearInterval(googleJumpInterval);
   } else {
     const oldPosition = _state.positions.google;
@@ -107,7 +109,7 @@ function _catchGoogle(playerNumber) {
       newPosition: _state.positions.google,
     });
   }
-}
+}             
 // GETTERS/SELECTORS
 export async function getGooglePoints() {
   return _state.points.google;
@@ -173,6 +175,8 @@ export async function start() {
       newPosition: { ..._state.positions.google }, //вставляем координаты после прыжка
     });
 
+    notifyObservers(EVENTS.GOOGLE_RUN_AWAY);
+
     _state.points.google++;
 
     notifyObservers(EVENTS.SCORES_CHANGED, {});
@@ -181,6 +185,7 @@ export async function start() {
       clearInterval(googleJumpInterval);
       _state.gameStatus = GAME_STATUSES.LOSE;
       notifyObservers(EVENTS.STATUS_CHANGED, {});
+
     }
   }, _state.settings.googleJumpInterval);
 

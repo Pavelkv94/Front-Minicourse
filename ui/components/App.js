@@ -1,5 +1,6 @@
 import { GAME_STATUSES } from "../../core/constants.js";
 import { getGameStatus, subscribe } from "../../core/state-manager.js";
+import { AudioComponent } from "./Audio/Audio.js";
 import { Grid } from "./Grid/Grid.js";
 import { Lose } from "./LoseComponent/LoseComponent.js";
 import { ResultPanel } from "./ResultPanel/ResultPanel.js";
@@ -11,6 +12,8 @@ export function App() {
   const localState = { prevGameStatus: null, cleanupFunctions: [] };
   console.log("APP CREATING");
   const element = document.createElement("div");
+
+  const audioComponent = AudioComponent();
 
   subscribe(() => render(element, localState));
 
@@ -50,7 +53,6 @@ async function render(element, localState) {
 
       const gridComponent = Grid();
       localState.cleanupFunctions.push(gridComponent.cleanup); //собираем в стейт функции зачистки
-
       element.append(settingsComponent.element, resultPanelComponent.element, gridComponent.element);
       break;
     case GAME_STATUSES.LOSE:
